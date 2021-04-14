@@ -166,49 +166,51 @@ function allocateAp(
             continue;
         }
 
-        const intToNextTen = (() => {
-            const delta = 10 - (stats.int % 10);
-            if (delta === 0) {
-                return 10;
-            } else {
-                return delta;
-            }
-        })();
-        const lukToNextTen = (() => {
-            const delta = 10 - (stats.luk % 10);
-            if (delta === 0) {
-                return 10;
-            } else {
-                return delta;
-            }
-        })();
+        const lukToNextTen = 10 - (stats.luk % 10);
 
-        if (ap >= lukToNextTen) {
-            const intAp = Math.min(intToNextTen, ap);
+        stats.int += lukToNextTen;
+        const spellDpsIntAdd = mDps(stats, rawMatk, spell, monster, d);
+        stats.int -= lukToNextTen;
 
-            stats.int += intAp;
-            const spellDpsIntAdd = mDps(stats, rawMatk, spell, monster, d);
-            stats.int -= intAp;
+        stats.luk += lukToNextTen;
+        const spellDpsLukAdd = mDps(stats, rawMatk, spell, monster, d);
+        stats.luk -= lukToNextTen;
 
-            stats.luk += lukToNextTen;
-            const spellDpsLukAdd = mDps(stats, rawMatk, spell, monster, d);
-            stats.luk -= lukToNextTen;
-
-            if (spellDpsIntAdd > spellDpsLukAdd) {
-                baseStats.int += intAp;
-                stats.int += intAp;
-                ap -= intAp;
-            } else {
-                baseStats.luk += lukToNextTen;
-                stats.luk += lukToNextTen;
-                ap -= lukToNextTen;
-            }
-        } else {
+        if (spellDpsIntAdd > spellDpsLukAdd) {
             ++baseStats.int;
             ++stats.int;
+            --ap;
+        } else {
+            ++baseStats.luk;
+            ++stats.luk;
             --ap;
         }
     }
 
     return [baseStats, stats];
 }
+
+/*================ Testing against level 41 GishGallop ================*/
+
+const initialBaseStats = new Stats(41, 4, 20, 5);
+const initialStats = initialBaseStats.clone();
+initialStats.str += 7 + 3 + 1 + 4;
+initialStats.dex += 3 + 1;
+initialStats.int += 3 + 1;
+initialStats.luk += 16 + 10 + 3 + 1 + 8;
+
+const [newBaseStats, newStats] = allocateAp(
+    31 * 5,
+    initialBaseStats,
+    initialStats,
+    41,
+    new Weapon(4, 0.75),
+    new Spell(60, 0.6, 0.81),
+    64 + 12 + 10 + 20,
+    57 + 20,
+    8 + 10,
+    new Monster(25, 14, 20, 35),
+);
+
+console.log(newBaseStats);
+console.log(newStats);
