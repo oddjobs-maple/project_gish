@@ -102,6 +102,7 @@ function allocateAp(
     rawMatk: number,
     rawWacc: number,
     monster: Monster,
+    wDominanceFactor: number,
 ): [Stats, Stats] {
     const baseStats = initialBaseStats.clone();
     const stats = initialStats.clone();
@@ -131,7 +132,7 @@ function allocateAp(
         const spellDps = mDps(stats, rawMatk, spell, monster, d);
         const meleeDps = wDps(stats, rawWacc, totalWatk, weapon, monster, d);
 
-        if (meleeDps < spellDps * (4 / 3)) {
+        if (meleeDps < spellDps * wDominanceFactor) {
             ++stats.str;
             const meleeDpsStrAdd = wDps(
                 stats,
@@ -210,6 +211,7 @@ const [newBaseStats, newStats] = allocateAp(
     57 + 20,
     8 + 10,
     new Monster(25, 14, 20, 35),
+    2, // 2 is swaggier than 4/3
 );
 
 console.log(newBaseStats);
