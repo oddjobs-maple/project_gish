@@ -180,12 +180,11 @@ function allocateAp(
         if (spellDpsIntAdd > spellDpsLukAdd) {
             ++baseStats.int;
             ++stats.int;
-            --ap;
         } else {
             ++baseStats.luk;
             ++stats.luk;
-            --ap;
         }
+        --ap;
     }
 
     return [baseStats, stats];
