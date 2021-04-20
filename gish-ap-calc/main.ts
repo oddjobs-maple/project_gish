@@ -21,197 +21,380 @@
  * this page.
  */
 
+import { allocateAp } from "./lib.js";
 import {
-    mDmgAfterDef,
+    mDps,
+    meleePeriod,
     mHitRate,
-    rawMDmg,
-    rawWDmg,
+    psm,
+    spellPeriod,
     wacc,
-    wDmgAfterDef,
+    wDps,
     wHitRate,
 } from "./mechanics.js";
-import { Monster, Spell, Stats, Weapon } from "./types.js";
+import {
+    Monster,
+    Speed,
+    Spell,
+    SpellType,
+    Stats,
+    Weapon,
+    WeaponType,
+} from "./types.js";
 
-function wDps(
-    stats: Stats,
-    rawWacc: number,
-    totalWatk: number,
-    weapon: Weapon,
-    monster: Monster,
-    d: number,
-): number {
-    const physHitRate = wHitRate(
-        wacc(stats.dex, stats.luk, rawWacc),
-        monster.avoid,
-        d,
-    );
+document.addEventListener("readystatechange", () => {
+    if (document.readyState === "complete") {
+        main();
+    }
+});
 
-    const [rawMeleeMin, rawMeleeMax] = rawWDmg(
-        stats.str,
-        stats.dex,
-        totalWatk,
-        weapon.psm,
-    );
-    const [meleeMin, meleeMax] = wDmgAfterDef(
-        rawMeleeMin,
-        rawMeleeMax,
-        monster.wdef,
-        d,
-    );
-    const meleeAvg = (meleeMax + meleeMin) / 2;
+function main(): void {
+    /**************** INPUTS ****************/
 
-    return (meleeAvg / weapon.period) * physHitRate;
-}
+    // Base stats
+    const strBaseInput = document.getElementById(
+        "str-base",
+    ) as HTMLInputElement;
+    const dexBaseInput = document.getElementById(
+        "dex-base",
+    ) as HTMLInputElement;
+    const intBaseInput = document.getElementById(
+        "int-base",
+    ) as HTMLInputElement;
+    const lukBaseInput = document.getElementById(
+        "luk-base",
+    ) as HTMLInputElement;
 
-function mDps(
-    stats: Stats,
-    rawMatk: number,
-    spell: Spell,
-    monster: Monster,
-    d: number,
-): number {
-    const tma = stats.int + rawMatk;
+    // Additional stats
+    const strAdditionalInput = document.getElementById(
+        "str-additional",
+    ) as HTMLInputElement;
+    const dexAdditionalInput = document.getElementById(
+        "dex-additional",
+    ) as HTMLInputElement;
+    const intAdditionalInput = document.getElementById(
+        "int-additional",
+    ) as HTMLInputElement;
+    const lukAdditionalInput = document.getElementById(
+        "luk-additional",
+    ) as HTMLInputElement;
+    const waccAdditionalInput = document.getElementById(
+        "wacc-additional",
+    ) as HTMLInputElement;
+    const matkAdditionalInput = document.getElementById(
+        "matk-additional",
+    ) as HTMLInputElement;
 
-    const magicHitRate = mHitRate(stats.int, stats.luk, monster.avoid, d);
+    // Total WATK
+    const totalWatkInput = document.getElementById(
+        "total-watk",
+    ) as HTMLInputElement;
 
-    const [rawSpellMin, rawSpellMax] = rawMDmg(
-        tma,
-        stats.int,
-        spell.basicAtk,
-        spell.mastery,
-    );
-    const [spellMin, spellMax] = mDmgAfterDef(
-        rawSpellMin,
-        rawSpellMax,
-        monster.mdef,
-        d,
-    );
-    const spellAvg = (spellMin + spellMax) / 2;
+    // AP available
+    const apAvailableInput = document.getElementById(
+        "ap-available",
+    ) as HTMLInputElement;
 
-    return (spellAvg / spell.period) * magicHitRate;
-}
+    // Character
+    const levelInput = document.getElementById("level") as HTMLInputElement;
 
-function allocateAp(
-    ap: number,
-    initialBaseStats: Stats,
-    initialStats: Stats,
-    level: number,
-    weapon: Weapon,
-    spell: Spell,
-    totalWatk: number,
-    rawMatk: number,
-    rawWacc: number,
-    monster: Monster,
-    wDominanceFactor: number,
-): [Stats, Stats] {
-    const baseStats = initialBaseStats.clone();
-    const stats = initialStats.clone();
-    const d = Math.max(monster.level - level, 0);
+    // Weapon/spell
+    const weaponTypeInput = document.getElementById(
+        "weapon-type",
+    ) as HTMLSelectElement;
+    const speedInput = document.getElementById("speed") as HTMLSelectElement;
+    const spellInput = document.getElementById("spell") as HTMLSelectElement;
+    const spellBasicAtkInput = document.getElementById(
+        "spell-basic-atk",
+    ) as HTMLInputElement;
+    const spellLinesInput = document.getElementById(
+        "spell-lines",
+    ) as HTMLSelectElement;
+    const masteryInput = document.getElementById(
+        "mastery",
+    ) as HTMLInputElement;
+    const spellBoosterInput = document.getElementById(
+        "spell-booster",
+    ) as HTMLInputElement;
 
-    while (ap !== 0) {
-        const physHitRate = wHitRate(
-            wacc(stats.dex, stats.luk, rawWacc),
-            monster.avoid,
-            d,
+    // Elemental stuff
+    const eleAmpInput = document.getElementById("ele-amp") as HTMLInputElement;
+    const eleWepInput = document.getElementById("ele-wep") as HTMLInputElement;
+
+    // Enemy
+    const wdefInput = document.getElementById(
+        "enemy-wdef",
+    ) as HTMLInputElement;
+    const mdefInput = document.getElementById(
+        "enemy-mdef",
+    ) as HTMLInputElement;
+    const avoidInput = document.getElementById(
+        "enemy-avoid",
+    ) as HTMLInputElement;
+    const eleSusInput = document.getElementById(
+        "ele-sus",
+    ) as HTMLSelectElement;
+    const enemyLevelInput = document.getElementById(
+        "enemy-level",
+    ) as HTMLInputElement;
+    const enemyCountInput = document.getElementById(
+        "enemy-count",
+    ) as HTMLInputElement;
+
+    // wDominanceFactor
+    const wDominanceFactorInput = document.getElementById(
+        "w-dominance-factor",
+    ) as HTMLInputElement;
+
+    /**************** OUTPUTS ****************/
+
+    // Stats
+    const strOutput = document.getElementById("str-output") as HTMLSpanElement;
+    const strBaseOutput = document.getElementById(
+        "str-base-output",
+    ) as HTMLSpanElement;
+    const strAdditionalOutput = document.getElementById(
+        "str-additional-output",
+    ) as HTMLSpanElement;
+    const dexOutput = document.getElementById("dex-output") as HTMLSpanElement;
+    const dexBaseOutput = document.getElementById(
+        "dex-base-output",
+    ) as HTMLSpanElement;
+    const dexAdditionalOutput = document.getElementById(
+        "dex-additional-output",
+    ) as HTMLSpanElement;
+    const intOutput = document.getElementById("int-output") as HTMLSpanElement;
+    const intBaseOutput = document.getElementById(
+        "int-base-output",
+    ) as HTMLSpanElement;
+    const intAdditionalOutput = document.getElementById(
+        "int-additional-output",
+    ) as HTMLSpanElement;
+    const lukOutput = document.getElementById("luk-output") as HTMLSpanElement;
+    const lukBaseOutput = document.getElementById(
+        "luk-base-output",
+    ) as HTMLSpanElement;
+    const lukAdditionalOutput = document.getElementById(
+        "luk-additional-output",
+    ) as HTMLSpanElement;
+
+    // Combat
+    const meleeDpsOutput = document.getElementById(
+        "melee-dps",
+    ) as HTMLSpanElement;
+    const spellDpsOutput = document.getElementById(
+        "spell-dps",
+    ) as HTMLSpanElement;
+    const meleeHitRateOutput = document.getElementById(
+        "melee-hit-rate",
+    ) as HTMLSpanElement;
+    const spellHitRateOutput = document.getElementById(
+        "spell-hit-rate",
+    ) as HTMLSpanElement;
+
+    function recalculate(): void {
+        const initialBaseStats = new Stats(
+            handleIntInput(strBaseInput, 4, 4),
+            handleIntInput(dexBaseInput, 4, 4),
+            handleIntInput(intBaseInput, 4, 4),
+            handleIntInput(lukBaseInput, 4, 4),
         );
-        if (physHitRate < 0.95) {
-            ++baseStats.luk;
-            ++stats.luk;
-            --ap;
 
-            continue;
-        }
-        if (baseStats.str + baseStats.dex < baseStats.int) {
-            ++baseStats.str;
-            ++stats.str;
-            --ap;
+        const level = handleIntInput(levelInput, 8, 30, 200);
 
-            continue;
-        }
+        const wepTypeInt = handleIntInput(weaponTypeInput, 30, 30, 44);
+        const wepType = (() => {
+            if (!(wepTypeInt in WeaponType)) {
+                weaponTypeInput.value = "30";
 
-        const spellDps = mDps(stats, rawMatk, spell, monster, d);
-        const meleeDps = wDps(stats, rawWacc, totalWatk, weapon, monster, d);
-
-        if (meleeDps < spellDps * wDominanceFactor) {
-            ++stats.str;
-            const meleeDpsStrAdd = wDps(
-                stats,
-                rawWacc,
-                totalWatk,
-                weapon,
-                monster,
-                d,
-            );
-            --stats.str;
-
-            ++stats.luk;
-            const meleeDpsLukAdd = wDps(
-                stats,
-                rawWacc,
-                totalWatk,
-                weapon,
-                monster,
-                d,
-            );
-            --stats.luk;
-
-            if (meleeDpsStrAdd > meleeDpsLukAdd) {
-                ++baseStats.str;
-                ++stats.str;
-            } else {
-                ++baseStats.luk;
-                ++stats.luk;
+                return WeaponType.OneHandedSword;
             }
-            --ap;
 
-            continue;
-        }
+            return wepTypeInt as WeaponType;
+        })();
+        const wepSpeed = handleIntInput(speedInput, 6, 2, 9) as Speed;
+        const weapon = new Weapon(
+            psm(wepType),
+            meleePeriod(wepType, wepSpeed),
+        );
 
-        const lukToNextTen = 10 - (stats.luk % 10);
+        const spellTypeInt = handleIntInput(spellInput, 0, 0, 2321008);
+        const spellType = (() => {
+            if (!(spellTypeInt in SpellType)) {
+                spellInput.value = "0";
 
-        stats.int += lukToNextTen;
-        const spellDpsIntAdd = mDps(stats, rawMatk, spell, monster, d);
-        stats.int -= lukToNextTen;
+                return SpellType.Other;
+            }
 
-        stats.luk += lukToNextTen;
-        const spellDpsLukAdd = mDps(stats, rawMatk, spell, monster, d);
-        stats.luk -= lukToNextTen;
+            return spellTypeInt as SpellType;
+        })();
+        const spellT = (() => {
+            let t = spellPeriod(
+                handleIntInput(spellBoosterInput, 0, -2, 0),
+                spellType,
+                wepSpeed,
+            );
+            if (t === undefined) {
+                console.error(
+                    `spellPeriod(${handleIntInput(
+                        spellBoosterInput,
+                        0,
+                        -2,
+                        0,
+                    )}, ${spellType}, ${wepSpeed}) is undefined`,
+                );
 
-        if (spellDpsIntAdd > spellDpsLukAdd) {
-            ++baseStats.int;
-            ++stats.int;
-        } else {
-            ++baseStats.luk;
-            ++stats.luk;
-        }
-        --ap;
+                t = 0.81;
+            }
+
+            return t;
+        })();
+        const spell = new Spell(
+            handleIntInput(spellBasicAtkInput, 10, 1),
+            handleIntInput(masteryInput, 15, 10, 90) / 100,
+            spellT,
+        );
+
+        const totalWatk = handleIntInput(totalWatkInput, 1, 0);
+        const rawMatk = handleIntInput(matkAdditionalInput, 0, 0);
+        const rawWacc = handleIntInput(waccAdditionalInput, 0, 0);
+
+        const monster = new Monster(
+            handleIntInput(enemyLevelInput, 1, 1),
+            handleIntInput(avoidInput, 1, 1),
+            handleIntInput(wdefInput, 0),
+            handleIntInput(mdefInput, 0),
+        );
+
+        const [baseStats, totalStats] = allocateAp(
+            handleIntInput(apAvailableInput, 1, 1),
+            initialBaseStats,
+            new Stats(
+                handleIntInput(strAdditionalInput, 0, 0),
+                handleIntInput(dexAdditionalInput, 0, 0),
+                handleIntInput(intAdditionalInput, 0, 0),
+                handleIntInput(lukAdditionalInput, 0, 0),
+            ).add(initialBaseStats),
+            level,
+            weapon,
+            spell,
+            totalWatk,
+            rawMatk,
+            rawWacc,
+            monster,
+            handleFloatInput(wDominanceFactorInput, 2, 1),
+        );
+        const additionalStats = totalStats.clone().sub(baseStats);
+
+        strOutput.textContent = "" + totalStats.str;
+        dexOutput.textContent = "" + totalStats.dex;
+        intOutput.textContent = "" + totalStats.int;
+        lukOutput.textContent = "" + totalStats.luk;
+
+        strBaseOutput.textContent = "" + baseStats.str;
+        dexBaseOutput.textContent = "" + baseStats.dex;
+        intBaseOutput.textContent = "" + baseStats.int;
+        lukBaseOutput.textContent = "" + baseStats.luk;
+
+        strAdditionalOutput.textContent = "" + additionalStats.str;
+        dexAdditionalOutput.textContent = "" + additionalStats.dex;
+        intAdditionalOutput.textContent = "" + additionalStats.int;
+        lukAdditionalOutput.textContent = "" + additionalStats.luk;
+
+        const d = Math.max(monster.level - level, 0);
+
+        meleeDpsOutput.textContent = wDps(
+            totalStats,
+            rawWacc,
+            totalWatk,
+            weapon,
+            monster,
+            d,
+        ).toFixed(3);
+        spellDpsOutput.textContent = mDps(
+            totalStats,
+            rawMatk,
+            spell,
+            monster,
+            d,
+        ).toFixed(3);
+
+        meleeHitRateOutput.textContent = (
+            100 *
+            wHitRate(
+                wacc(totalStats.dex, totalStats.luk, rawWacc),
+                monster.avoid,
+                d,
+            )
+        ).toFixed(2);
+        spellHitRateOutput.textContent = (
+            100 * mHitRate(totalStats.int, totalStats.luk, monster.avoid, d)
+        ).toFixed(2);
     }
 
-    return [baseStats, stats];
+    for (const input of [
+        strBaseInput,
+        dexBaseInput,
+        intBaseInput,
+        lukBaseInput,
+        strAdditionalInput,
+        dexAdditionalInput,
+        intAdditionalInput,
+        lukAdditionalInput,
+        waccAdditionalInput,
+        matkAdditionalInput,
+        totalWatkInput,
+        apAvailableInput,
+        levelInput,
+        weaponTypeInput,
+        speedInput,
+        spellInput,
+        spellBasicAtkInput,
+        spellLinesInput,
+        masteryInput,
+        spellBoosterInput,
+        eleAmpInput,
+        eleWepInput,
+        wdefInput,
+        mdefInput,
+        avoidInput,
+        eleSusInput,
+        enemyLevelInput,
+        enemyCountInput,
+        wDominanceFactorInput,
+    ]) {
+        input.addEventListener("change", recalculate);
+    }
+
+    recalculate();
 }
 
-/*================ Testing against level 41 GishGallop ================*/
+function handleIntInput(
+    input: HTMLInputElement | HTMLSelectElement,
+    def: number,
+    min: number = Number.NEGATIVE_INFINITY,
+    max: number = Number.POSITIVE_INFINITY,
+): number {
+    let x = Math.min(Math.max(parseInt(input.value, 10), min), max);
+    if (!Number.isFinite(x)) {
+        x = def;
+    }
+    input.value = "" + x;
 
-const initialBaseStats = new Stats(41, 4, 20, 5);
-const initialStats = initialBaseStats.clone();
-initialStats.str += 7 + 3 + 1 + 4;
-initialStats.dex += 3 + 1;
-initialStats.int += 3 + 1;
-initialStats.luk += 16 + 10 + 3 + 1 + 8;
+    return x;
+}
 
-const [newBaseStats, newStats] = allocateAp(
-    31 * 5,
-    initialBaseStats,
-    initialStats,
-    41,
-    new Weapon(4, 0.75),
-    new Spell(60, 0.6, 0.81),
-    64 + 12 + 10 + 20,
-    57 + 20,
-    8 + 10,
-    new Monster(25, 14, 20, 35),
-    2, // 2 is swaggier than 4/3
-);
+function handleFloatInput(
+    input: HTMLInputElement | HTMLSelectElement,
+    def: number,
+    min: number = Number.NEGATIVE_INFINITY,
+    max: number = Number.POSITIVE_INFINITY,
+): number {
+    let x = Math.min(Math.max(parseFloat(input.value), min), max);
+    if (!Number.isFinite(x)) {
+        x = def;
+    }
+    input.value = "" + x;
 
-console.log(newBaseStats);
-console.log(newStats);
+    return x;
+}

@@ -49,8 +49,75 @@ export class Stats {
     public clone(): Stats {
         return new Stats(this.str, this.dex, this.int, this.luk);
     }
+
+    /** Operates **in-place** and then returns `this`. */
+    public add(other: Stats): Stats {
+        this.str += other.str;
+        this.dex += other.dex;
+        this.int += other.int;
+        this.luk += other.luk;
+
+        return this;
+    }
+
+    /** Operates **in-place** and then returns `this`. */
+    public sub(other: Stats): Stats {
+        this.str -= other.str;
+        this.dex -= other.dex;
+        this.int -= other.int;
+        this.luk -= other.luk;
+
+        return this;
+    }
 }
 
 export class Weapon {
     public constructor(public psm: number, public period: number) {}
+}
+
+export enum WeaponType {
+    OneHandedSword = 30,
+    OneHandedAxe = 31,
+    OneHandedMace = 32,
+    Dagger = 33,
+    Wand = 37,
+    Staff = 38,
+    TwoHandedSword = 40,
+    TwoHandedAxe = 41,
+    TwoHandedMace = 42,
+    Spear = 43,
+    Polearm = 44,
+}
+
+export const enum Speed {
+    Faster2 = 2,
+    Faster3 = 3,
+    Fast4 = 4,
+    Fast5 = 5,
+    Normal = 6,
+    Slow7 = 7,
+    Slow8 = 8,
+    Slower = 9,
+}
+
+export enum SpellType {
+    Other = 0,
+    Explosion = 2111002,
+    PoisonMist = 2111003,
+    ElementCompositionFP = 2111006,
+    Elquines = 2121005,
+    MeteorShower = 2121007,
+    IceStrike = 2211002,
+    ThunderSpear = 2211003,
+    ElementCompositionIL = 2211006,
+    Ifrit = 2221005,
+    ChainLightning = 2221006,
+    Blizzard = 2221007,
+    Heal = 2301002,
+    HolyArrow = 2301005,
+    ShiningRay = 2311004,
+    SummonDragon = 2311006,
+    Bahamut = 2321003,
+    AngelRay = 2321007,
+    Genesis = 2321008,
 }

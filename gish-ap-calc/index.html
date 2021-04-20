@@ -2,14 +2,686 @@
 <html dir="ltr" lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>gish-ap-calc test</title>
-    <meta name="description" content="gish-ap-calc test" />
+    <title>Oddjobs | Gish AP Calculator</title>
+    <meta name="description" content="The guild for MapleStory odd-jobbers" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="icon" type="image/png" href="../img/favicon.png" />
 
     <script type="module" async src="./main.js"></script>
   </head>
 
-  <body style="background-color:#111315;color:#e4e8ec;">
-    <p>gish-ap-calc test</p>
+  <body>
+    <div id="nav-content-wrapper">
+      <nav id="main-nav">
+        <div id="main-nav-inner">
+          <div id="main-nav-pullout"><span>&#x25b6;</span></div>
+
+          <a href="../" class="nav-h"
+            >Oddjobs
+            <br />
+            <img
+              src="../img/logo.svg"
+              alt="Oddjobs logo | Due to Evan MacDonald of the Noun Project (CC BY 3.0)"
+              title="Oddjobs logo | Due to Evan MacDonald of the Noun Project (CC BY 3.0)"
+          /></a>
+
+          <ul class="nav-list">
+            <li>
+              <a href="../">Home</a>
+            </li>
+            <li>
+              <a href="../join-on-up.html">Join On Up</a>
+            </li>
+            <li>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://oddjobs.flarum.cloud/"
+                >Forum</a
+              >
+            </li>
+            <li>
+              <a href="../odd-jobs.html">Odd Jobs</a>
+            </li>
+            <li>
+              <a href="../guides/">Guides</a>
+            </li>
+            <li>
+              <a href="../dmg-calc/">Damage Calc</a>
+            </li>
+            <li class="active">
+              <a href="./">Gish AP Calc</a>
+            </li>
+            <li>
+              <a href="../archive/">Archive</a>
+            </li>
+            <li>
+              <a href="../rankings/">Rankings</a>
+            </li>
+            <li>
+              <a href="../source.html" data-jslicense="1">Source</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div id="content">
+        <header>
+          <h1>Gish AP Calculator</h1>
+          <span class="subtitle"
+            >Gishes are very difficult. But this calculator can help!</span
+          >
+
+          <noscript>
+            <div id="noscript">
+              <p>
+                It looks like you have JavaScript disabled or blocked. If your
+                browser supports JavaScript, you need not worry about enabling
+                it for this page, as the JavaScript on this page is entirely
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://en.wikipedia.org/wiki/Free_software"
+                  >free</a
+                >
+                (<a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://www.gnu.org/licenses/agpl-3.0"
+                  >GNU AGPL v3</a
+                >+). See
+                <a href="../source.html" data-jslicense="1">the Source page</a>
+                for more information and access to source code.
+              </p>
+            </div>
+          </noscript>
+        </header>
+
+        <main>
+          <a href="#calculator" class="h-anchor"
+            ><h2 id="calculator">Calculator</h2></a
+          >
+
+          <div id="calculator-input">
+            <fieldset id="stats">
+              <legend>Stats</legend>
+
+              <fieldset id="base-stats">
+                <legend>Base stats</legend>
+
+                <label for="str-base">
+                  <abbr
+                    class="help"
+                    title="Base STR; only counting STR from character creation + AP spent on STR."
+                    >Base STR</abbr
+                  >
+                  <input
+                    type="number"
+                    id="str-base"
+                    name="str-base"
+                    min="4"
+                    value="4"
+                  />
+                </label>
+
+                <label for="dex-base">
+                  <abbr
+                    class="help"
+                    title="Base DEX; only counting DEX from character creation + AP spent on DEX."
+                    >Base DEX</abbr
+                  >
+                  <input
+                    type="number"
+                    id="dex-base"
+                    name="dex-base"
+                    min="4"
+                    value="4"
+                  />
+                </label>
+
+                <label for="int-base">
+                  <abbr
+                    class="help"
+                    title="Base INT; only counting INT from character creation + AP spent on INT."
+                    >Base INT</abbr
+                  >
+                  <input
+                    type="number"
+                    id="int-base"
+                    name="int-base"
+                    min="4"
+                    value="4"
+                  />
+                </label>
+
+                <label for="luk-base">
+                  <abbr
+                    class="help"
+                    title="Base LUK; only counting LUK from character creation + AP spent on LUK."
+                    >Base LUK</abbr
+                  >
+                  <input
+                    type="number"
+                    id="luk-base"
+                    name="luk-base"
+                    min="4"
+                    value="4"
+                  />
+                </label>
+              </fieldset>
+
+              <fieldset id="additional-stats">
+                <legend>Additional stats</legend>
+
+                <label for="str-additional">
+                  <abbr class="help" title="STR from equipment."
+                    >Additional STR</abbr
+                  >
+                  +<input
+                    type="number"
+                    id="str-additional"
+                    name="str-additional"
+                    min="0"
+                    value="0"
+                  />
+                </label>
+
+                <label for="dex-additional">
+                  <abbr class="help" title="DEX from equipment."
+                    >Additional DEX</abbr
+                  >
+                  +<input
+                    type="number"
+                    id="dex-additional"
+                    name="dex-additional"
+                    min="0"
+                    value="0"
+                  />
+                </label>
+
+                <label for="int-additional">
+                  <abbr class="help" title="INT from equipment."
+                    >Additional INT</abbr
+                  >
+                  +<input
+                    type="number"
+                    id="int-additional"
+                    name="int-additional"
+                    min="0"
+                    value="0"
+                  />
+                </label>
+
+                <label for="luk-additional">
+                  <abbr class="help" title="LUK from equipment."
+                    >Additional LUK</abbr
+                  >
+                  +<input
+                    type="number"
+                    id="luk-additional"
+                    name="luk-additional"
+                    min="0"
+                    value="0"
+                  />
+                </label>
+
+                <label for="wacc-additional">
+                  <abbr
+                    class="help"
+                    title="Raw (not from DEX nor LUK) WACC from equipment + buffs."
+                    >Additional raw WACC</abbr
+                  >
+                  +<input
+                    type="number"
+                    id="wacc-additional"
+                    name="wacc-additional"
+                    min="0"
+                    value="0"
+                  />
+                </label>
+
+                <label for="matk-additional">
+                  <abbr
+                    class="help"
+                    title="Raw (not from INT) MATK from equipment + buffs."
+                    >Additional raw MATK</abbr
+                  >
+                  +<input
+                    type="number"
+                    id="matk-additional"
+                    name="matk-additional"
+                    min="0"
+                    value="0"
+                  />
+                </label>
+              </fieldset>
+
+              <label for="total-watk">
+                <abbr
+                  class="help"
+                  title="Total weapon attack; the sum of WATK from equipment, WATK buffs, and ammunition."
+                  >Total WATK</abbr
+                >
+                <input
+                  type="number"
+                  id="total-watk"
+                  name="total-watk"
+                  min="0"
+                  value="1"
+                />
+              </label>
+            </fieldset>
+
+            <label for="ap-available">
+              <abbr
+                class="help"
+                title="How many AP (ability points) you can spend."
+                >AP available</abbr
+              >
+              <input
+                type="number"
+                id="ap-available"
+                name="ap-available"
+                min="1"
+                value="1"
+              />
+            </label>
+
+            <fieldset>
+              <legend>Character</legend>
+
+              <label for="level">
+                <abbr class="help" title="Your player character&rsquo;s level."
+                  >Level</abbr
+                >
+                <input
+                  type="number"
+                  id="level"
+                  name="level"
+                  min="8"
+                  max="200"
+                  value="30"
+                />
+              </label>
+            </fieldset>
+
+            <fieldset id="weapon">
+              <legend>Weapon/spell</legend>
+
+              <label for="weapon-type">
+                <abbr
+                  class="help"
+                  title="The type of weapon that you have equipped."
+                  >Type</abbr
+                >
+                <select name="weapon-type" id="weapon-type">
+                  <optgroup label="Warrior&rsquo;s">
+                    <option value="30" selected>One-handed sword</option>
+                    <option value="40">Two-handed sword</option>
+                    <option value="31">One-handed axe</option>
+                    <option value="41">Two-handed axe</option>
+                    <option value="32">One-handed blunt weapon</option>
+                    <option value="42">Two-handed blunt weapon</option>
+                    <option value="43">Spear</option>
+                    <option value="44">Polearm</option>
+                  </optgroup>
+
+                  <optgroup label="Magician&rsquo;s">
+                    <option value="37">Wand</option>
+                    <option value="38">Staff</option>
+                  </optgroup>
+
+                  <optgroup label="Rogue&rsquo;s">
+                    <option value="33">Dagger</option>
+                  </optgroup>
+                </select>
+              </label>
+
+              <label for="speed">
+                <abbr
+                  class="help"
+                  title="The speed category of your weapon, after being adjusted by buffs. This value can never be lower than 2, so lower values are clamped to just 2. It is often (but not always) necessary to use out-of-game information to get the speed category of your weapon, because the game uses ambiguous names like &ldquo;Fast&rdquo;. Ordinary Booster skills reduce your speed category by 2. Spell Booster has a similar effect (reducing by 1 category at earlier levels of Spell Booster, and 2 at later levels), although it only works with wands and staves. Speed Infusion reduces by 4 categories (or, again depending on implementation, it may instead stack with other Booster skills and reduce by just 2)."
+                  >Speed</abbr
+                >
+                <select name="speed" id="speed">
+                  <option value="2">2 (Faster)</option>
+                  <option value="3">3 (Faster)</option>
+                  <option value="4">4 (Fast)</option>
+                  <option value="5">5 (Fast)</option>
+                  <option value="6" selected>6 (Normal)</option>
+                  <option value="7">7 (Slow)</option>
+                  <option value="8">8 (Slow)</option>
+                  <option value="9">9 (Slower)</option>
+                </select>
+              </label>
+
+              <label for="spell">
+                <abbr
+                  class="help"
+                  title="The spell that you are casting. If you don&rsquo;t see the spell that you are casting listed here, just leave it at the default &ldquo;[other]&rdquo;."
+                  >Spell</abbr
+                >
+                <select name="spell" id="spell">
+                  <option value="0">[other]</option>
+
+                  <optgroup label="F/P Mage">
+                    <option value="2111002">Explosion</option>
+                    <option value="2111003">Poison Mist</option>
+                    <option value="2111006">Element Composition</option>
+                  </optgroup>
+
+                  <optgroup label="F/P Archmage">
+                    <option value="2121005">Elquines</option>
+                    <option value="2121007">Meteor Shower</option>
+                  </optgroup>
+
+                  <optgroup label="I/L Mage">
+                    <option value="2211002">Ice Strike</option>
+                    <option value="2211003">Thunder Spear</option>
+                    <option value="2211006">Element Composition</option>
+                  </optgroup>
+
+                  <optgroup label="I/L Archmage">
+                    <option value="2221005">Ifrit</option>
+                    <option value="2221006">Chain Lightning</option>
+                    <option value="2221007">Blizzard</option>
+                  </optgroup>
+
+                  <optgroup label="Cleric">
+                    <option value="2301002">Heal</option>
+                    <option value="2301005">Holy Arrow</option>
+                  </optgroup>
+
+                  <optgroup label="Priest">
+                    <option value="2311004">Shining Ray</option>
+                    <option value="2311006">Summon Dragon</option>
+                  </optgroup>
+
+                  <optgroup label="Bishop">
+                    <option value="2321003">Bahamut</option>
+                    <option value="2321007">Angel Ray</option>
+                    <option value="2321008">Genesis</option>
+                  </optgroup>
+                </select>
+              </label>
+
+              <label for="spell-basic-atk">
+                <abbr
+                  class="help"
+                  title="The basic attack of a spell is listed in the spell&rsquo;s description, for the particular level of the spell that you&rsquo;re using. Heal technically uses a damage percentage, not a basic attack, but here we treat each percentage point as being one point of basic attack."
+                  >Spell basic attack</abbr
+                >
+                <input
+                  type="number"
+                  id="spell-basic-atk"
+                  name="spell-basic-atk"
+                  min="1"
+                  value="10"
+                />
+              </label>
+
+              <label for="spell-lines">
+                <abbr
+                  class="help"
+                  title="The number of lines (i.e. displayed damage numbers) of damage that your spell deals."
+                  >Spell lines</abbr
+                >
+                <input
+                  type="number"
+                  id="spell-lines"
+                  name="spell-lines"
+                  min="1"
+                  value="1"
+                />
+              </label>
+
+              <label for="mastery">
+                <abbr
+                  class="help"
+                  title="The mastery of the spell that you are casting. The mastery is given by the description of the spell, at the particular skill level that you&rsquo;re casting the spell at."
+                  >Spell mastery</abbr
+                >
+                <input
+                  type="number"
+                  id="mastery"
+                  name="mastery"
+                  min="10"
+                  max="90"
+                  step="5"
+                  value="15"
+                />%
+              </label>
+
+              <label for="spell-booster">
+                <abbr
+                  class="help"
+                  title="The amount that your spellcasting speed category is reduced by, due to buffs. This is &minus;1 at earlier levels of Spell Booster (&lt;11), and &minus;2 at later levels. This only applies to magical attacks."
+                  >Spell booster</abbr
+                >
+                <input
+                  type="number"
+                  id="spell-booster"
+                  name="spell-booster"
+                  min="-2"
+                  max="0"
+                  value="0"
+                />
+              </label>
+            </fieldset>
+
+            <details>
+              <summary>Elemental</summary>
+
+              <fieldset>
+                <legend>Elemental stuff</legend>
+
+                <label for="ele-amp">
+                  <abbr
+                    class="help"
+                    title="The percentage that your magic damage is multiplied by, according to the description of your level of Element Amplification. If you don&rsquo;t have Element Amplification, this is just 100%."
+                    >Element Amplification</abbr
+                  >
+                  <input
+                    type="number"
+                    id="ele-amp"
+                    name="ele-amp"
+                    min="100"
+                    value="100"
+                  />%
+                </label>
+
+                <label for="ele-wep">
+                  <abbr
+                    class="help"
+                    title="How much your current weapon amplifies the element of the spell that you are currently casting. This only applies when using an Elemental Wand or Elemental Staff in conjunction with a spell of the same element, in which case this should be 25%."
+                    >Elemental Wand/Staff</abbr
+                  >
+                  <input
+                    type="number"
+                    id="ele-wep"
+                    name="ele-wep"
+                    min="0"
+                    value="0"
+                  />%
+                </label>
+              </fieldset>
+            </details>
+
+            <fieldset>
+              <legend>Enemy</legend>
+
+              <label for="enemy-wdef">
+                <abbr
+                  class="help"
+                  title="The target monster&rsquo;s WDEF (weapon defence)."
+                  >WDEF</abbr
+                >
+                <input
+                  type="number"
+                  id="enemy-wdef"
+                  name="enemy-wdef"
+                  value="0"
+                />
+              </label>
+
+              <label for="enemy-mdef">
+                <abbr
+                  class="help"
+                  title="The target monster&rsquo;s MDEF (magic defence)."
+                  >MDEF</abbr
+                >
+                <input
+                  type="number"
+                  id="enemy-mdef"
+                  name="enemy-mdef"
+                  value="0"
+                />
+              </label>
+
+              <label for="enemy-avoid">
+                <abbr
+                  class="help"
+                  title="The target monster&rsquo;s AVOID (avoidability)."
+                  >AVOID</abbr
+                >
+                <input
+                  type="number"
+                  id="enemy-avoid"
+                  name="enemy-avoid"
+                  min="1"
+                  value="1"
+                />
+              </label>
+
+              <label for="ele-sus">
+                <abbr
+                  class="help"
+                  title="How susceptible is the target monster to the element that you are currently using. This applies to magical attacks in the obvious ways. For physical attacks, only some physical attacks have elements; for example, Flamethrower is elementally fire, and Blast is elementally holy when used with Holy/Divine Charge."
+                  >Element susceptibility</abbr
+                >
+                <select name="ele-sus" id="ele-sus">
+                  <option value="0">Immune</option>
+                  <option value="0.5">Strong</option>
+                  <option value="1" selected>Neutral</option>
+                  <option value="1.5">Weak</option>
+                </select>
+              </label>
+
+              <label for="enemy-level">
+                <abbr class="help" title="The level of the target monster."
+                  >Level</abbr
+                >
+                <input
+                  type="number"
+                  id="enemy-level"
+                  name="enemy-level"
+                  min="1"
+                  value="1"
+                />
+              </label>
+
+              <label for="enemy-count">
+                <abbr
+                  class="help"
+                  title="How many enemy targets there are of this attack. This value can be greater than one, but note that this does not take into account the damage taken by any of said virtual enemies, except for one of them (you can choose exactly which one by modifying &ldquo;Ordinal # of hit&rdquo;). This value is only here for skills like Heal, which change their per-line damage based on the total number of targets. Note that when casting Heal (maximum of 6 targets), the caster counts as a target, thus lowering the maximum number of possible enemy targets from 6 to 5."
+                  >Count</abbr
+                >
+                <input
+                  type="number"
+                  id="enemy-count"
+                  name="enemy-count"
+                  min="1"
+                  max="15"
+                  value="1"
+                />
+              </label>
+            </fieldset>
+
+            <label for="w-dominance-factor">
+              <abbr
+                class="help"
+                title="Roughly how many times more powerful you want your melee single-target DPS to be than your magical single-target DPS. Because gishes can only hit a single target at a time in melee, they typically focus on melee for single-target DPS, and magic for mobbing; thus, this value is generally larger than 1."
+                >wDominanceFactor</abbr
+              >
+              <input
+                type="number"
+                id="w-dominance-factor"
+                name="w-dominance-factor"
+                min="1"
+                step="0.001"
+                value="2"
+              />
+            </label>
+          </div>
+
+          <div id="calculator-output">
+            <h3>Stats</h3>
+
+            <b>STR:</b> <span id="str-output">???</span> (<span
+              id="str-base-output"
+              >???</span
+            >+<span id="str-additional-output">???</span>)
+            <br />
+            <b>DEX:</b> <span id="dex-output">???</span> (<span
+              id="dex-base-output"
+              >???</span
+            >+<span id="dex-additional-output">???</span>)
+            <br />
+            <b>INT:</b> <span id="int-output">???</span> (<span
+              id="int-base-output"
+              >???</span
+            >+<span id="int-additional-output">???</span>)
+            <br />
+            <b>LUK:</b> <span id="luk-output">???</span> (<span
+              id="luk-base-output"
+              >???</span
+            >+<span id="luk-additional-output">???</span>)
+
+            <hr />
+
+            <h3>Combat</h3>
+
+            <b>Single-target DPS (melee, spell):</b>
+            <span id="melee-dps">???</span>, <span id="spell-dps">???</span>
+            <br />
+            <b>Melee hit rate, spell hit rate:</b>
+            <span id="melee-hit-rate">???</span>%,
+            <span id="spell-hit-rate">???</span>%
+
+            <hr />
+
+            <h3>Warnings</h3>
+
+            <div id="warnings-div">
+              <span id="warnings" class="warnings"
+                >[Warnings have not been implemented yet.]</span
+              >
+            </div>
+          </div>
+
+          <a href="#legal" class="h-anchor"><h2 id="legal">Legal</h2></a>
+
+          <p>
+            All of the code on this page is entirely
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://en.wikipedia.org/wiki/Free_software"
+              >free</a
+            >
+            (<a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.gnu.org/licenses/agpl-3.0"
+              >GNU AGPL v3</a
+            >+). See
+            <a href="../source.html" data-jslicense="1">the Source page</a>
+            for more information and access to source code.
+          </p>
+        </main>
+      </div>
+    </div>
   </body>
 </html>

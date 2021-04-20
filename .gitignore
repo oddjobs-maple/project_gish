@@ -2,5 +2,8 @@
 /target
 Cargo.lock
 
+# TypeScript stuff
+*.js
+
 # text editing stuff
 .vscode/
