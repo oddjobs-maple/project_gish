@@ -175,7 +175,7 @@ export function mDps(
     );
     const spellAvg = (spellMin + spellMax) / 2;
 
-    return (spellAvg / spell.period) * magicHitRate;
+    return (spellAvg / spell.period) * magicHitRate * spell.lines;
 }
 
 export function psm(wepType: WeaponType): number {

@@ -35,6 +35,7 @@ export class Spell {
         public basicAtk: number,
         public mastery: number,
         public period: number,
+        public lines: number,
     ) {}
 }
 

@@ -253,6 +253,7 @@ function main(): void {
             handleIntInput(spellBasicAtkInput, 10, 1),
             handleIntInput(masteryInput, 15, 10, 90) / 100,
             spellT,
+            handleIntInput(spellLinesInput, 1, 1),
         );
 
         const totalWatk = handleIntInput(totalWatkInput, 1, 0);
