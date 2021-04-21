@@ -41,7 +41,7 @@ export function allocateAp(
     const stats = initialStats.clone();
     const d = Math.max(monster.level - level, 0);
 
-    while (ap !== 0) {
+    while (ap > 0) {
         const physHitRate = wHitRate(
             wacc(stats.dex, stats.luk, rawWacc),
             monster.avoid,
@@ -110,7 +110,7 @@ export function allocateAp(
         const spellDpsLukAdd = mDps(stats, rawMatk, spell, monster, d);
         stats.luk -= lukToNextTen;
 
-        if (spellDpsIntAdd > spellDpsLukAdd) {
+        if (spellDpsIntAdd >= spellDpsLukAdd) {
             ++baseStats.int;
             ++stats.int;
         } else {
